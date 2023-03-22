@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\news;
 use App\Models\Comment;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 class HomePageController extends Controller
 {
     public function homePage()
     {
+        $user = Auth::user();
+
         $newsPost = news::where('status', 1)->get();
 
         return view('welcome', ['newsPost' => $newsPost]);

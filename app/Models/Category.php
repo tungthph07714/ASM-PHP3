@@ -15,6 +15,7 @@ class Category extends Model
         'id',
         'parent_id',
         'name',
+        'status',
         'created_at',
         'updated_at'
     ];
