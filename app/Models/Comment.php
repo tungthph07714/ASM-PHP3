@@ -9,8 +9,8 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $table ='comments';
-   
+    protected $table = 'comments';
+
     protected $fillable = [
         'id',
         'news_id',
@@ -21,7 +21,12 @@ class Comment extends Model
         'created_at',
         'updated_at'
     ];
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+    public function parent()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
     }
 }

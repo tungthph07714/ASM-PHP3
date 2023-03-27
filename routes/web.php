@@ -22,17 +22,23 @@ use App\Http\Controllers\Post\PostController;
 Route::get('/', [Home::class, 'homePage'])->name('home');
 Route::get('detail-news/{id}', [Home::class, 'detailNews'])->name('detail-news');
 Route::post('detail-news/{id}', [Home::class, 'addComment']);
+Route::post('reply-comment/{id}', [Home::class, 'replyComment']);
 
-Route::get('create-post', [Home::class, 'createNewsPost']);
-Route::post('create-post', [Home::class, 'saveNewsPost']);
+
 
 
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'admin'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin', 'mod'])->group(function () {
+    Route::get('post', [PostController::class, 'listPost'])->name('listPost');
+    Route::get('create-post', [Home::class, 'createNewsPost']);
+    Route::post('create-post', [Home::class, 'saveNewsPost']);
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -56,7 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/edit-category/{id}', [CategoryController::class, 'saveEditCategory']);
 
     //manage post
-    Route::get('post', [PostController::class, 'listPost'])->name('listPost');
+
     Route::post('/remove-post/{id}', [PostController::class, 'removePost']);
     Route::post('/push-post/{id}', [PostController::class, 'pushPost']);
     Route::get('browse-post', [ControlPostController::class, 'browsePost'])->name('browse-post');

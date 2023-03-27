@@ -21,20 +21,40 @@ class HomePageController extends Controller
 
     public function detailNews($id)
     {
-        $newsPost = news::where('id', $id)->with('comment')->get();
-        $comment = Comment::where('news_id', $id)->with('user')->get();
-
+        $newsPost = news::where('id', $id)->get();
+        $comment = Comment::where('news_id', '=', $id)
+            ->where('parent_id', '=', 0)
+            ->with('parent')
+            ->with('user')
+            ->get();
         return view('detailNewsPost', ['data' => $newsPost, 'comment' => $comment, 'news_id' => $id]);
     }
 
     public function addComment(Request $request, $id)
     {
+        $user = Auth::user();
         $data = $request->all();
         $comment = new Comment();
         $comment->news_id = $id;
-        $comment->user_id = 1;
+        $comment->user_id = $user->id;
         $comment->content = $data['content'];
         $comment->parent_id = 0;
+        $comment->is_edit = 0;
+
+        $comment->save();
+
+        return redirect()->route('detail-news', $id);
+    }
+
+    public function replyComment(Request $request, $id)
+    {
+        $user = Auth::user();
+        $data = $request->all();
+        $comment = new Comment();
+        $comment->news_id = $id;
+        $comment->user_id = $user->id;
+        $comment->content = $data['content'];
+        $comment->parent_id = $data['comment_id'];
         $comment->is_edit = 0;
 
         $comment->save();

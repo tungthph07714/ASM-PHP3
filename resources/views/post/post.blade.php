@@ -16,7 +16,7 @@
             <tr>
                 <td> {{ $item->id }}</td>
                 <td>{{ $item->category->name }}</td>
-                <td>{{ $item->user }}</td>
+                <td>{{ $item->user->username }}</td>
                 <td>
                     @switch($item->status)
                         @case(0)
