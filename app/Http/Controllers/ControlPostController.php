@@ -10,6 +10,7 @@ class ControlPostController extends Controller
 {
     public function browsePost()
     {
+
         $post = news::where('status', 0)->get();
         return view('controlPost.browsePost', ['post' => $post]);
     }

@@ -215,30 +215,67 @@
                         data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-                        <li class="nav-item">
+                        @if ($user->role == 0)
+                            <li class="nav-item">
 
-                            <a href="/acount" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>
-                                    Tài khoản
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/category" class="nav-link">
-                                <i class="nav-icon fas fa-copy"></i>
-                                <p>
-                                    Danh mục
-                                </p>
-                            </a>
-                        </li>
+                                <a href="/acount" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
+                                    <p>
+                                        Tài khoản
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/category" class="nav-link">
+                                    <i class="nav-icon fas fa-copy"></i>
+                                    <p>
+                                        Danh mục
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
+
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>
-                                    Charts
+                                    Bài đăng
+                                    <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/post" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Danh sách</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/create-post" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Tạo mới </p>
+                                    </a>
+                                </li>
+                                @if ($user->role == 0)
+                                    <li class="nav-item">
+                                        <a href="/browse-post" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Duyệt bài </p>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                <li class="nav-item">
+                                    <a href="pages/UI/sliders.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Sliders</p>
+                                    </a>
+                                </li>
+
+
+
+
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link">

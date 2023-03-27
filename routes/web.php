@@ -3,9 +3,10 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomePageController as Home;
-use App\Http\Controllers\ControlPostController as HomeController;
+use App\Http\Controllers\ControlPostController;
 use App\Http\Controllers\Admin\AcountController;
 use App\Http\Controllers\Category\CategoryController;
+use App\Http\Controllers\Post\PostController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,8 +26,7 @@ Route::post('detail-news/{id}', [Home::class, 'addComment']);
 Route::get('create-post', [Home::class, 'createNewsPost']);
 Route::post('create-post', [Home::class, 'saveNewsPost']);
 
-Route::get('browse-post', [HomeController::class, 'browsePost'])->name('browse-post');
-Route::put('browse-post/{id}', [HomeController::class, 'upgratePost']);
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     //manage acount
     Route::get('acount', [acountController::class, 'manageAdmin'])->name('manageAdmin');
     Route::get('create-acount', [acountController::class, 'createAcount'])->name('create-acount');
@@ -47,6 +48,19 @@ Route::middleware('auth')->group(function () {
 
     //manege category
     Route::get('category', [CategoryController::class, 'manageCategory'])->name('manageCategory');
+    Route::get('create-category', [CategoryController::class, 'createCategory'])->name('createCategory');
+    Route::post('/create-category', [CategoryController::class, 'saveCategory']);
+    Route::post('/disable-category/{id}', [CategoryController::class, 'disableCategory']);
+    Route::post('/enable-category/{id}', [CategoryController::class, 'enableCategory']);
+    Route::get('/edit-category/{id}', [CategoryController::class, 'editCategory']);
+    Route::post('/edit-category/{id}', [CategoryController::class, 'saveEditCategory']);
+
+    //manage post
+    Route::get('post', [PostController::class, 'listPost'])->name('listPost');
+    Route::post('/remove-post/{id}', [PostController::class, 'removePost']);
+    Route::post('/push-post/{id}', [PostController::class, 'pushPost']);
+    Route::get('browse-post', [ControlPostController::class, 'browsePost'])->name('browse-post');
+    Route::put('browse-post/{id}', [ControlPostController::class, 'upgratePost']);
 });
 
 require __DIR__ . '/auth.php';

@@ -25,5 +25,5 @@
         </div>
     @endforeach
 @endsection
-<a href="/create-post">Tạo bài viết</a>
-<a href="/browse-post">Duyệt bài viết</a>
+{{-- <a href="/create-post">Tạo bài viết</a>
+<a href="/browse-post">Duyệt bài viết</a> --}}

@@ -13,7 +13,6 @@ class HomePageController extends Controller
 {
     public function homePage()
     {
-        $user = Auth::user();
 
         $newsPost = news::where('status', 1)->get();
 
@@ -51,11 +50,12 @@ class HomePageController extends Controller
 
     public function saveNewsPost(Request $request)
     {
+        $user = Auth::user();
         $data = $request->all();
         $news = new news();
         $news->category_id = $data['category_id'];
-        $news->author_id = 1;
-        $news->status = 0;
+        $news->author_id = $user->id;
+        $news->status = $user->role == 0 ? 1 : 0;
         $news->title = $data['title'];
         $news->sub_title = $data['sub_title'];
         $news->comment = $data['comment'];

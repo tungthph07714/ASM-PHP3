@@ -14,17 +14,17 @@
                 <td>{{ $item->status == 1 ? 'Đang hiển thị' : 'Đã ẩn' }}</td>
                 <td>
                     @if ($item->status == 1)
-                        <form action="/disable-account/{{ $item->id }}" method="post">
+                        <form action="/disable-category/{{ $item->id }}" method="post">
                             @csrf
                             <button>Ẩn danh mục</button>
                         </form>
                     @else
-                        <form action="/disable-account/{{ $item->id }}" method="post">
+                        <form action="/enable-category/{{ $item->id }}" method="post">
                             @csrf
                             <button>Hiện danh mục</button>
                         </form>
                     @endif
-                    <a href="">Chỉnh sửa danh mục</a>
+                    <a href="/edit-category/{{ $item->id }}">Chỉnh sửa danh mục</a>
                 </td>
             </tr>
         @endforeach
