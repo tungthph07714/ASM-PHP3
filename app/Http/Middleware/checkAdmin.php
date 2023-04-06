@@ -21,7 +21,8 @@ class checkAdmin
         $user = $request->user();
         if ($user->role == 0) {
             return $next($request);
+        } else {
+            abort(403);
         }
-        abort(403);
     }
 }

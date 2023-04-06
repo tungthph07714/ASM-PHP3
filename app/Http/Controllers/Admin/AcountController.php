@@ -27,11 +27,6 @@ class AcountController extends Controller
     }
     public function saveAcount(RuleNhapForm $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
 
         $data = $request->all();
         $user = new User();

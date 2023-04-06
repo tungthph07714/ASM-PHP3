@@ -8,9 +8,70 @@ use App\Models\news;
 use App\Models\Comment;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Key_words;
+use App\Http\Requests\CommentRequest;
+use App\Http\Requests\ReplyCommentRequest;
+use App\Http\Requests\createKey;
+use App\Http\Resources\KeyWords as KeyResource;
 
 class HomePageController extends Controller
 {
+    /**start list api*/
+    public function listPost()
+    {
+        $data = Key_words::all();
+        $arr = [
+            'status' => true,
+            'message' => "Lấy danh sách thành công",
+            'data' => KeyResource::collection($data)
+
+        ];
+        return response()->json($arr, 201);
+    }
+    public function createKey(createKey $request)
+    {
+        $input = $request->all();
+
+        $product = Key_words::create($input);
+        $arr = [
+            'status' => true,
+            'message' => "Lưu từ khóa thành công",
+            'data' => new KeyResource($product)
+        ];
+        return response()->json($arr, 201);
+    }
+
+    public function detailKey($id)
+    {
+        $data = Key_words::find($id);
+        if (is_null($data)) {
+            $arr = [
+                'success' => false,
+                'message' => 'Không tìm thấy từ khóa',
+                'dara' => []
+            ];
+            return response()->json($arr, 200);
+        }
+
+        $arr = [
+            'status' => true,
+            'message' => "Lấy danh sách thành công",
+            'data' => new KeyResource($data)
+
+        ];
+        return response()->json($arr, 201);
+    }
+
+    /**
+     * end list api
+     */
+
+
+    public function listKey()
+    {
+        return view('keyWords.key');
+    }
+
     public function homePage()
     {
 
@@ -21,19 +82,33 @@ class HomePageController extends Controller
 
     public function detailNews($id)
     {
-        $newsPost = news::where('id', $id)->get();
+        $newsPost = news::where('id', $id)->first();
         $comment = Comment::where('news_id', '=', $id)
             ->where('parent_id', '=', 0)
-            ->with('parent')
             ->with('user')
+            ->with('parent')
             ->get();
-        return view('detailNewsPost', ['data' => $newsPost, 'comment' => $comment, 'news_id' => $id]);
+
+
+        $shareComponent = \Share::page(
+            'http://127.0.0.1:8000/detail-news/3',
+            'Your share text comes here',
+        )
+            ->facebook()
+            ->twitter()
+            ->linkedin()
+            ->telegram()
+            ->whatsapp()
+            ->reddit();
+        return view('detailNewsPost', ['data' => $newsPost, 'comment' => $comment, 'news_id' => $id, 'shareComponent' => $shareComponent]);
     }
 
-    public function addComment(Request $request, $id)
+    public function addComment(CommentRequest $request, $id)
     {
-        $user = Auth::user();
         $data = $request->all();
+
+        $user = Auth::user();
+
         $comment = new Comment();
         $comment->news_id = $id;
         $comment->user_id = $user->id;
@@ -46,14 +121,14 @@ class HomePageController extends Controller
         return redirect()->route('detail-news', $id);
     }
 
-    public function replyComment(Request $request, $id)
+    public function replyComment(ReplyCommentRequest $request, $id)
     {
         $user = Auth::user();
         $data = $request->all();
         $comment = new Comment();
         $comment->news_id = $id;
         $comment->user_id = $user->id;
-        $comment->content = $data['content'];
+        $comment->content = $data['content_reply'];
         $comment->parent_id = $data['comment_id'];
         $comment->is_edit = 0;
 
@@ -64,7 +139,7 @@ class HomePageController extends Controller
 
     public function createNewsPost()
     {
-        $category = Category::all();
+        $category = Category::where('status', 1)->get();
         return view('controlPost.createNewsPost', ['category' => $category]);
     }
 

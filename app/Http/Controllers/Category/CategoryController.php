@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\RuleNhapForm;
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 
 class CategoryController extends Controller
@@ -20,12 +21,8 @@ class CategoryController extends Controller
     }
 
 
-    public function saveCategory(Request $request)
+    public function saveCategory(CategoryRequest $request)
     {
-
-        $request->validate([
-            'name' => ['required', 'string'],
-        ]);
 
         $data = $request->all();
         $category = new Category();
@@ -60,12 +57,9 @@ class CategoryController extends Controller
         return view('category.edit-category', ['record' => $record]);
     }
 
-    public function saveEditCategory(Request $request, $id)
+    public function saveEditCategory(CategoryRequest $request, $id)
     {
         $category = Category::find($id);
-        $request->validate([
-            'name' => ['required', 'string'],
-        ]);
 
         $data = $request->all();
         $category->name = $data['name'];

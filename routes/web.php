@@ -7,6 +7,7 @@ use App\Http\Controllers\ControlPostController;
 use App\Http\Controllers\Admin\AcountController;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\SocialShareButtonsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,7 +25,7 @@ Route::get('detail-news/{id}', [Home::class, 'detailNews'])->name('detail-news')
 Route::post('detail-news/{id}', [Home::class, 'addComment']);
 Route::post('reply-comment/{id}', [Home::class, 'replyComment']);
 
-
+Route::get('/social-media-share', [SocialShareButtonsController::class, 'ShareWidget']);
 
 
 
@@ -32,7 +33,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified', 'admin'])->name('dashboard');
 
-Route::middleware(['auth', 'admin', 'mod'])->group(function () {
+Route::middleware(['auth', 'mod'])->group(function () {
     Route::get('post', [PostController::class, 'listPost'])->name('listPost');
     Route::get('create-post', [Home::class, 'createNewsPost']);
     Route::post('create-post', [Home::class, 'saveNewsPost']);
@@ -67,6 +68,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/push-post/{id}', [PostController::class, 'pushPost']);
     Route::get('browse-post', [ControlPostController::class, 'browsePost'])->name('browse-post');
     Route::put('browse-post/{id}', [ControlPostController::class, 'upgratePost']);
+
+    //manage key words
+
+    Route::get('key-words/', [Home::class, 'listKey']);
 });
+
 
 require __DIR__ . '/auth.php';

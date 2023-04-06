@@ -190,7 +190,6 @@
                     <div class="info">
                         @php
                             $user = Auth::user();
-                            
                         @endphp
                         <a href="#" class="d-block">{{ $user->username }}</a>
                     </div>
@@ -278,10 +277,10 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="/key-words" class="nav-link">
                                 <i class="nav-icon fas fa-tree"></i>
                                 <p>
-                                    UI Elements
+                                    Từ khóa
                                 </p>
                             </a>
                         </li>

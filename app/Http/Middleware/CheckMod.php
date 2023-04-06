@@ -17,7 +17,7 @@ class CheckMod
     public function handle(Request $request, Closure $next)
     {
         $user = $request->user();
-        if ($user->role != 2) {
+        if ($user->role == 0 | $user->role == 1) {
             return $next($request);
         }
         abort(403);
