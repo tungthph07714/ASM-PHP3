@@ -1,35 +1,33 @@
-@if (Route::has('login'))
-    <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-        @auth
+@extends('layouts.hone-page-layout')
+@section('content-home-page')
+    <!-- services -->
+    <div class="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="titlepage text_align_center ">
+                        <h2>Our Massage Services</h2>
+                    </div>
+                </div>
+            </div>
 
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit">logout</button>
-            </form>
-            @php
-                $user = Auth::user();
-            @endphp
+            <div class="grid-container" style="  display: grid; grid-template-columns: auto auto auto;">
+                @foreach ($newsPost as $item)
+                    <div>
+                        <a href="/detail-news/{{ $item->id }}">
+                            <div id="ho_shad" class="services_box text_align_left">
 
-            @if ($user->role != 2)
-                <a href="/post">Quản lý</a>
-            @endif
-        @else
-            <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>
+                                <figure><img src="{{ asset('dist/img/service1.jpg') }}" alt="#" /></figure>
+                                <p style="color: #363636; font-size: 20px; line-height: 25px; font-weight: bold;">
+                                    {{ $item->title }}</p>
+                                <p>{{ $item->sub_title }}</p>
+                            </div>
+                        </a>
 
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline">Register</a>
-            @endif
-        @endauth
+                    </div>
+                @endforeach
+            </div>
+        </div>
     </div>
-@endif
-@foreach ($newsPost as $item)
-    <div>
-        <a href="/detail-news/{{ $item->id }}">{{ $item->title }}</a>
-    </div>
-@endforeach
-
-<script>
-    fetch("http://127.0.0.1:8000/api/list-post")
-        .then((response) => response.json())
-        .then((data) => console.log(data));
-</script>
+    <!-- end services -->
+@endsection

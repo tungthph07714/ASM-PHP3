@@ -18,6 +18,10 @@ use App\Http\Controllers\HomePageController;
 Route::get('list-key-word/', [HomePageController::class, 'listPost']);
 Route::post('key/create', [HomePageController::class, 'createKey']);
 Route::get('key/detail-key/{id}', [HomePageController::class, 'detailKey']);
+Route::put('key/update/{id}', [HomePageController::class, 'updatelKey']);
+Route::delete('key/delete/{id}', [HomePageController::class, 'deleteKey']);
+
+Route::get('category/list', [HomePageController::class, 'listCate']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

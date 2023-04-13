@@ -7,16 +7,33 @@ use Illuminate\Http\Request;
 use App\Models\news;
 use App\Models\Comment;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Key_words;
 use App\Http\Requests\CommentRequest;
 use App\Http\Requests\ReplyCommentRequest;
 use App\Http\Requests\createKey;
 use App\Http\Resources\KeyWords as KeyResource;
+use App\Http\Resources\CateResource;
+
+use App\Mail\sendMail;
+use Illuminate\Support\Facades\Mail;
 
 class HomePageController extends Controller
 {
     /**start list api*/
+    public function listCate()
+    {
+        $category = Category::where('status', 1)->get();
+        $arr = [
+            'status' => true,
+            'message' => "Lấy danh sách thành công",
+            'data' => CateResource::collection($category)
+
+        ];
+        return response()->json($arr, 201);
+    }
+
     public function listPost()
     {
         $data = Key_words::all();
@@ -62,11 +79,68 @@ class HomePageController extends Controller
         return response()->json($arr, 201);
     }
 
+    public function updatelKey(Request $request, $id)
+    {
+        $input = $request->all();
+        $data = Key_words::find($id);
+
+        $data->name = $input['name'];
+        $data->status = $input['status'];
+        $data->save();
+
+        $arr = [
+            'status' => true,
+            'message' => 'Từ khóa cập nhật thành công',
+            'data' => new KeyResource($data)
+        ];
+
+        return response()->json($arr, 200);
+    }
+
+    public function deleteKey($id)
+    {
+        $data = Key_words::find($id);
+        $data->delete();
+        $arr = [
+            'status' => true,
+            'message' => 'Xóa từ khóa thành công',
+            'data' => []
+        ];
+        return response()->json($arr, 200);
+    }
+
     /**
      * end list api
      */
 
+    public function searchPost(Request $request)
+    {
+        $data = $request->all();
+        $post = news::where('status', 1)
+            ->where('title', 'like', '%' . $data['search'] . '%')
+            ->orWhere('sub_title', 'like', '%' . $data['search'] . '%')
+            ->orWhere('comment', 'like', '%' . $data['search'] . '%')
+            ->get();
+        return view('searchPost', ['data' => $post]);
+    }
 
+    public function infomation()
+    {
+        $user = Auth::user();
+        return view('profile.infomation', ['data' => $user]);
+    }
+
+    public function changeInfo(Request $request, $id)
+    {
+        $user = User::find($id);
+        $data = $request->all();
+
+        $user->username = $data['username'];
+        $user->email = $data['email'];
+        $user->save();
+        Mail::to('tungthph07714@fpt.edu.vn')->send(new sendMail);
+        return redirect()->route('infomation');
+    }
     public function listKey()
     {
         return view('keyWords.key');
@@ -89,7 +163,6 @@ class HomePageController extends Controller
             ->with('parent')
             ->get();
 
-
         $shareComponent = \Share::page(
             'http://127.0.0.1:8000/detail-news/3',
             'Your share text comes here',
@@ -100,7 +173,9 @@ class HomePageController extends Controller
             ->telegram()
             ->whatsapp()
             ->reddit();
-        return view('detailNewsPost', ['data' => $newsPost, 'comment' => $comment, 'news_id' => $id, 'shareComponent' => $shareComponent]);
+
+        $user = Auth::user();
+        return view('detailNewsPost', ['data' => $newsPost, 'comment' => $comment, 'news_id' => $id, 'shareComponent' => $shareComponent, 'user' => $user]);
     }
 
     public function addComment(CommentRequest $request, $id)
@@ -157,5 +232,11 @@ class HomePageController extends Controller
 
         $news->save();
         return redirect()->route('home');
+    }
+
+    public function detailCategory($id)
+    {
+        $newsPost = news::where('status', 1)->where('category_id', $id)->get();
+        return view('detailCategory', ['data' => $newsPost]);
     }
 }

@@ -19,14 +19,21 @@ use App\Http\Controllers\SocialShareButtonsController;
 |
 */
 
-
 Route::get('/', [Home::class, 'homePage'])->name('home');
 Route::get('detail-news/{id}', [Home::class, 'detailNews'])->name('detail-news');
+
+Route::get('/social-media-share', [SocialShareButtonsController::class, 'ShareWidget']);
 Route::post('detail-news/{id}', [Home::class, 'addComment']);
 Route::post('reply-comment/{id}', [Home::class, 'replyComment']);
 
-Route::get('/social-media-share', [SocialShareButtonsController::class, 'ShareWidget']);
+Route::middleware(['auth', 'mod'])->group(function () {
 
+
+    Route::get('/infomation', [Home::class, 'infomation'])->name('infomation');
+    Route::post('/change-info/{id}', [Home::class, 'changeInfo']);
+
+    Route::post('/search', [Home::class, 'searchPost']);
+});
 
 
 Route::get('/dashboard', function () {
@@ -70,8 +77,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('browse-post/{id}', [ControlPostController::class, 'upgratePost']);
 
     //manage key words
-
     Route::get('key-words/', [Home::class, 'listKey']);
+
+    Route::get('/detail-category/{id}', [Home::class, 'detailCategory']);
+
+    //manage acount
+
+
 });
 
 
